@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,10 +76,22 @@ WSGI_APPLICATION = 'djangorf_crud.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', 'mssql'),
+        'NAME': os.getenv('DB_NAME'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': '',  # generalmente vacío si usas instancia local
+        'OPTIONS': {
+            'driver': os.getenv('DB_DRIVER', 'ODBC Driver 17 for SQL Server'),
+            'trusted_connection': os.getenv('DB_TRUSTED_CONNECTION', 'yes'),
+            # ⚠️ Si tienes error de certificado SSL, puedes agregar:
+            # 'extra_params': 'TrustServerCertificate=yes'
+        },
+        # Si quisieras usar usuario y contraseña:
+        # 'USER': os.getenv('DB_USER'),
+        # 'PASSWORD': os.getenv('DB_PASSWORD'),
     }
 }
+
 
 
 # Password validation
